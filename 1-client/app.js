@@ -18,8 +18,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
 			url: '/',
 			templateUrl: 'views/home/home.html',
 			controller: 'views/home/home.js'
-			}
-		})
+		});
 
 	// .state('home', {
 	// 	url: '/',
@@ -42,6 +41,8 @@ app.config(function ($stateProvider, $urlRouterProvider) {
 	// }) // Close FORM state
 
 });
+
+angular.module('myApp.controllers', []);
 
 app.controller('masterCtrl', function ($scope, $q, $state) {
 
