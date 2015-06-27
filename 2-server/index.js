@@ -12,12 +12,13 @@ app.use(express.static(browserPath));
 
 var indexHtmlPath = path.join(__dirname, '/index.html');
 
+var startDb = require('./db');
+
 app.use('/api', require('./APIs'));
 
 app.get('/', function (req, res) {
     res.sendFile(indexHtmlPath);
 });
-
 
 var server = app.listen(5001, function () {
   var host = server.address().address

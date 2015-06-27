@@ -36,6 +36,18 @@ router.get('/', function (req, res) {
 	// (!) PLUG - HARDCODED
 	var outfile = '789012.json'
 
+
+	// fs.watch()
+	fs.readdir('/vagrant/io.playground/4-data',function(err, files){
+		if(err)
+			console.log(err);
+		else
+			console.log(files);
+	});
+	
+
+
+
 	terminal.stdout.on('data', function (data) {
 	    console.log('stdout: ' + data);
 	});
@@ -58,4 +70,3 @@ router.get('/', function (req, res) {
 	}, 1000);
 
 });
-
