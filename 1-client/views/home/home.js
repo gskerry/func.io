@@ -1,13 +1,11 @@
-app.controller('SequenceController', function ($scope) {
+app.controller('SequenceController', function ($scope, $http) {
 
 	function Sequencer () {
 		this.sequence = [];
 		this.push = function(block) {
 			this.sequence.push(block);
 		};
-		// this.pop = function() {
-		// 	this.sequence.pop();
-		// }
+		this.sequenceId = Date.now();
 
 		this.run = function() {
 			$scope.startBlock.execute();
@@ -26,21 +24,43 @@ app.controller('SequenceController', function ($scope) {
 	}
 
 	function StartBlock () {
+		var that = this;
 		this.input;
 		this.funct;
 		this.language;
+		this.blockPosition = "start";
 		this.execute = function() {
-			this.output = eval("(" + this.funct + ")" + "(" + this.input + ")");
+//			this.output = eval("(" + this.funct + ")" + "(" + this.input + ")");
 
-			// Write the function to a file with appropriate readFile and writeFile methods in correct language
-			// fs.writeFile('files')
-			// 
+//			Make a request to the server with the block params
+
+			var blockContents = {
+		    	input: this.input,
+		    	language: this.language,
+		    	blockPosition: this.blockPosition,
+		    	funct: this.funct
+			}
+
+
+			$http.get('/api/scriptwriter', {
+			    params: blockContents
+		    }).
+				success(function(data, status, headers, config) {
+				    console.log("Received response successfully: " + data);
+				    console.log(that.output);
+				    that.output = data;
+				}).
+				error(function(data, status, headers, config) {
+				    console.log("Err in response: " + data);
+				});
+			
 		};
 	}
 
-	function Block () {
+	function Block (position) {
 		this.input;
 		this.funct;
+		this.blockPosition = position;
 		this.setInput = function(input) {
 			this.input = input;
 		}
@@ -53,7 +73,7 @@ app.controller('SequenceController', function ($scope) {
 	$scope.startBlock = new StartBlock();
 
     $scope.createBlock = function() {
-    	var block = new Block();
+    	var block = new Block($scope.sequencer.length);
     	$scope.sequencer.push(block);
     	console.log("New Block created!");
     }

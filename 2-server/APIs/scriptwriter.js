@@ -1,4 +1,3 @@
-
 var fs = require('fs')
 var terminal = require('child_process').spawn('bash')
 var router = require('express').Router();
@@ -8,34 +7,32 @@ var mongoose = require('mongoose');
 var Block = mongoose.model('Block');
 
 router.get('/', function (req, res) {
-	res.send("Hit the scriptwriter API");
 
-
-	var extBook = {
+	var languageToFileExtensionMapping = {
 		'node' : '.js',
 		'python' : '.py'
 	}
 
-	var imageDex = {
-		'node' : '4797dc6f7a9c'
+	// NOTE: THIS IS UNIQUE FOR EACH DOCKER RUNNING ENVIRONMENT
+	var dockerImageId = {
+		'node' : 'b8844354c16f'
 	}
 
-	var lingocmd = req.query.lingocmd;
-	var ext = extBook[lingocmd]
-	var infile = req.query.infile;
-	// console.log('infile: ',infile);
-	var scriptname = req.query.scriptname;
-	var ext = extBook[lingocmd]
-	var scriptfile = scriptname + ext
-	var scriptcontent = req.query.scriptcontent;
+	console.log(req.query);
 
-	var image = imageDex[lingocmd];
-	console.log("image: ",image)
+	var language = req.query.language;
+	var fileExtension = languageToFileExtensionMapping[language]
+	var blockPosition = req.query.blockPosition;
+	var scriptName = blockPosition + fileExtension
+	var scriptContent = "fs = require('fs'); var myFunc = function(infile, outfile){fs.readFile(infile, function(err, input){if(err){throw err}; var result = " + req.query.funct + "(input);fs.writeFile(outfile, result, function (err) {if (err) return console.log(err);console.log('output written: ' + outfile);});});};myFunc(process.argv[2], process.argv[3]);"
 
-	// (!) PLUG - HARDCODED
-	var outfile = '789012.json'
+	var image = dockerImageId[language];
+	console.log("imageId: ", image)
 
-	fs.writeFile('3-scripts/' + scriptfile + '', scriptcontent, function(err){
+	//Define input and output files
+	var input = req.query.input;
+
+	fs.writeFile('3-scripts/' + scriptName, scriptContent, function(err){
 		if (err) console.log(err);
 		console.log('scriptfile saved.');
 
@@ -51,21 +48,28 @@ router.get('/', function (req, res) {
 			console.log('child process exited with code ' + code);
 		});
 
+		if (blockPosition === "start") {var outfile =  "0.json"} else {var outfile = (blockPosition + 1) + '.json'};
+		var infile = blockPosition + '.json'
+		fs.writeFile('4-data/' + blockPosition + '.json', input, function (err) {
+			if (err) throw err;
+			console.log('infile is saved!');
+
 			console.log('Sending stdin to terminal');
-			terminal.stdin.write('sudo docker run -i --rm -v "$PWD":/src/app -w /src/app ' + image + ' ' + lingocmd + ' ' + '3-scripts/'+scriptfile + ' ' + '4-data/'+infile + ' ' + '4-data/'+outfile + '\n');
+			console.log('Running: ' + 'docker run -i --rm -v "$PWD":/src/app -w /src/app ' + image + ' ' + language + ' ' + '3-scripts/'+scriptName + ' ' + '4-data/'+infile + ' ' + '4-data/'+outfile + '\n')
+			terminal.stdin.write('docker run -i --rm -v "$PWD":/src/app -w /src/app ' + image + ' ' + language + ' ' + '3-scripts/'+scriptName + ' ' + '4-data/'+infile + ' ' + '4-data/'+outfile + '\n');
 			// terminal.stdin.write('echo "Hello $USER. Your machine runs since:"\n');
 			// terminal.stdin.write('uptime\n');
 			// console.log('Ending terminal session');
 			terminal.stdin.end();
 
-	});
+			// TODO, NEED TO ACCOUNT FOR ASYNC BELOW
 
-	// fs.watch()
-	// fs.readdir('/vagrant/io.playground/4-data',function(err, files){
-	// 	if(err)
-	// 		console.log(err);
-	// 	else
-	// 		console.log(files);
-	// });
+			fs.readFile('4-data/' + outfile, function(err, data) {
+				console.log('Going to send back: ' + data);
+				res.send(data);
+			})
+		});
+
+	});
 
 });
