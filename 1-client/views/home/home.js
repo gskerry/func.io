@@ -25,7 +25,9 @@ app.controller('SequenceController', function ($scope, $http) {
 
 	function StartBlock () {
 		var that = this;
+		// if you've set this to 'that', should the properties be defined on 'that'?
 		this.input;
+		this.type;
 		this.funct;
 		this.language;
 		this.blockPosition = "start";
@@ -36,6 +38,7 @@ app.controller('SequenceController', function ($scope, $http) {
 
 			var blockContents = {
 		    	input: this.input,
+		    	type: this.type,
 		    	language: this.language,
 		    	blockPosition: this.blockPosition,
 		    	funct: this.funct
