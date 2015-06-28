@@ -61,6 +61,11 @@ router.get('/', function (req, res) {
 			// terminal.stdin.write('uptime\n');
 			// console.log('Ending terminal session');
 			terminal.stdin.end();
+
+			fs.readFile('4-data/' + outfile, function(err, data) {
+				console.log('Going to send back: ' + data);
+				res.send(data);
+			})
 		});
 
 	});

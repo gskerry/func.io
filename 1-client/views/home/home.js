@@ -24,6 +24,7 @@ app.controller('SequenceController', function ($scope, $http) {
 	}
 
 	function StartBlock () {
+		var that = this;
 		this.input;
 		this.funct;
 		this.language;
@@ -40,9 +41,18 @@ app.controller('SequenceController', function ($scope, $http) {
 		    	funct: this.funct
 			}
 
+
 			$http.get('/api/scriptwriter', {
 			    params: blockContents
-		    })
+		    }).
+				success(function(data, status, headers, config) {
+				    console.log("Received response successfully: " + data);
+				    console.log(that.output);
+				    that.output = data;
+				}).
+				error(function(data, status, headers, config) {
+				    console.log("Err in response: " + data);
+				});
 			
 		};
 	}
