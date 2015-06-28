@@ -15,16 +15,28 @@ router.get('/', function (req, res) {
 
 	// NOTE: THIS IS UNIQUE FOR EACH DOCKER RUNNING ENVIRONMENT
 	var dockerImageId = {
-		'node' : 'b8844354c16f'
+		'node' : '4797dc6f7a9c'
 	}
 
 	console.log(req.query);
 
 	var language = req.query.language;
+	var type = req.query.type;
+	console.log("the type is:", type)
 	var fileExtension = languageToFileExtensionMapping[language]
 	var blockPosition = req.query.blockPosition;
 	var scriptName = blockPosition + fileExtension
-	var scriptContent = "fs = require('fs'); var myFunc = function(infile, outfile){fs.readFile(infile, function(err, input){if(err){throw err}; var result = " + req.query.funct + "(input);fs.writeFile(outfile, result, function (err) {if (err) return console.log(err);console.log('output written: ' + outfile);});});};myFunc(process.argv[2], process.argv[3]);"
+
+	var parser;
+
+	(function(inp){
+		if(inp === 'string'){parser = ""}
+		else if(inp === 'integer'){parser = "input = Number(input)"}
+	})(type);
+
+	console.log("parser: ",parser)
+
+	var scriptContent = "fs = require('fs'); var myFunc = function(infile, outfile){fs.readFile(infile, function(err, input){if(err){console.log(err)}; " + parser + "; var result = function (input) {" + req.query.funct + "}(input);fs.writeFile(outfile, result, function (err) {if (err) return console.log(err);console.log('output written: ' + outfile);});});};myFunc(process.argv[2], process.argv[3]);"
 
 	var image = dockerImageId[language];
 	console.log("imageId: ", image)

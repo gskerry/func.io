@@ -6,17 +6,25 @@
         <form style="background-color:pink;margin:40px">
             <div class="form-group">
                 <label for="input">Input</label>
+                <label for="type">Type</label>
+                <select ng-model="startBlock.type">
+                  <option value="string">string</option>
+                  <option value="integer">integer</option>
+                  <option value="array">array</option>
+                  <option value="object">object</option>
+                </select>
                 <input ng-model="startBlock.input" type="text" class="form-control" id="input" placeholder="Input">
 
                 <label for="language">Language</label>
                 <select ng-model="startBlock.language">
                   <option value="node">Node</option>
                   <option value="ruby">Ruby</option>
-                </select>
+                </select>                
                 <br>
 
-                <label for="function">Function</label>
+                <label for="function">function (input) {</label>
                 <textarea ng-model="startBlock.funct" type="text" class="form-control" id="Function" placeholder="Function"></textarea>
+                <p>}</p>
             </div>
             <p>Output: {{startBlock.output}}</p>
         </form>
