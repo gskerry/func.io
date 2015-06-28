@@ -3,3 +3,5 @@
 **/bower_components/
 **/npm-debug.log
 _r&d/
+.idea/
+.DS_Store
