@@ -1,13 +1,51 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title></title>
-    </head>
-    <body>
-        <h1>Testing. 1,2,3.</h1>
-        <p>
-            scope variable from js: {{myvar}}
-        </p>
-    </body>
-</html>
+<section id="home" ng-controller="SequenceController">
+
+<p>Start Block</p>
+
+    <div>
+        <form style="background-color:pink;margin:40px">
+            <div class="form-group">
+                <label for="input">Input</label>
+                <input ng-model="startBlock.input" type="text" class="form-control" id="input" placeholder="Input">
+
+                <label for="language">Language</label>
+                <select ng-model="startBlock.language">
+                  <option value="javascript">Javascript</option>
+                  <option value="ruby">Ruby</option>
+                </select>
+                <br>
+
+                <label for="function">Function</label>
+                <textarea ng-model="startBlock.funct" type="text" class="form-control" id="Function" placeholder="Function"></textarea>
+            </div>
+            <p>Output: {{startBlock.output}}</p>
+        </form>
+    </div>
+
+<p>Middle Block(s)</p>
+
+    <button type="button" class="btn btn-default" ng-click="createBlock()">Insert Block</button>
+
+    <div ng-repeat="block in sequencer.sequence">
+        <form style="background-color:pink;margin:40px">
+            <div class="form-group">
+
+                <label for="language">Language</label>
+                <select ng-model="block.language">
+                  <option value="javascript">Javascript</option>
+                  <option value="ruby">Ruby</option>
+                </select>
+                <br>
+
+                <label for="function">Function</label>
+                <textarea ng-model="block.funct" type="text" class="form-control" id="Function" placeholder="Function"></textarea>
+            </div>
+            <p>Output: {{block.output}}</p>
+        </form>
+    </div>
+
+<p>Controls</p>
+
+    <button type="button" class="btn btn-success" ng-click="runSequence()">Run Sequence</button>
+
+</section>
