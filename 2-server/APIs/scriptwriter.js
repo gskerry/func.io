@@ -62,6 +62,8 @@ router.get('/', function (req, res) {
 			// console.log('Ending terminal session');
 			terminal.stdin.end();
 
+			// TODO, NEED TO ACCOUNT FOR ASYNC BELOW
+
 			fs.readFile('4-data/' + outfile, function(err, data) {
 				console.log('Going to send back: ' + data);
 				res.send(data);
