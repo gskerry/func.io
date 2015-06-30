@@ -23,7 +23,8 @@
                 <br>
 
                 <label for="function">function (input) {</label>
-                <textarea ng-model="startBlock.funct" type="text" class="form-control" id="Function" placeholder="Function"></textarea>
+                <textarea ng-model="startBlock.funct" type="text" class="form-control" id="Function" name="editor"></textarea>
+                <div id="editor"></div>
                 <p>}</p>
             </div>
             <p>Output: {{startBlock.output}}</p>
@@ -46,7 +47,7 @@
                 <br>
 
                 <label for="function">Function</label>
-                <textarea ng-model="block.funct" type="text" class="form-control" id="Function" placeholder="Function"></textarea>
+                <textarea ng-model="block.funct" type="text" class="form-control" id="Function"></textarea>
             </div>
             <p>Output: {{block.output}}</p>
         </form>
@@ -57,3 +58,14 @@
     <button type="button" class="btn btn-success" ng-click="runSequence()">Run Sequence</button>
 
 </section>
+
+<script src="/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.getSession().setMode("ace/mode/javascript");
+
+    var textarea = $('textarea[name="editor"]').hide();
+    editor.getSession().setValue(textarea.val());
+</script>
