@@ -2,6 +2,8 @@
 **/node_modules/
 **/bower_components/
 **/npm-debug.log
+4-data/
+3-scripts/
 _r&d/
 .idea/
 .DS_Store
