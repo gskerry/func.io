@@ -7,6 +7,10 @@ var schema = new mongoose.Schema({
       required: true,
       unique: true
     },
+    input_type: {
+        type: String,
+        required: true
+    },
     lingo: {
         type: String,
         required: true

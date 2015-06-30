@@ -27,6 +27,8 @@
                 <p>}</p>
             </div>
             <p>Output: {{startBlock.output}}</p>
+            <input ng-model="startBlock.name" type="text" id="name" placeholder="function name">
+            <button type="button" class="btn btn-success" ng-click="startBlock.save()">Save</button>
         </form>
     </div>
 
@@ -54,7 +56,7 @@
 
 <p>Controls</p>
 
-    <button type="button" class="btn btn-success" ng-click="saveSequence()">Save Sequence</button>
+
     <button type="button" class="btn btn-success" ng-click="runSequence()">Run Sequence</button>
 
 </section>
