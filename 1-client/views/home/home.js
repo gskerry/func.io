@@ -68,7 +68,29 @@ app.controller('SequenceController', function ($scope, $http) {
 			this.input = input;
 		}
 		this.execute = function() {
-			this.output = eval("(" + this.funct + ")" + "(" + this.input + ")");
+			//this.output = eval("(" + this.funct + ")" + "(" + this.input + ")");
+
+			//Make a request to the server with the block params
+
+			var blockContents = {
+		    	type: this.type,
+		    	language: this.language,
+		    	blockPosition: this.blockPosition,
+		    	funct: this.funct
+			}
+
+
+			$http.get('/api/scriptwriter', {
+			    params: blockContents
+		    }).
+				success(function(data, status, headers, config) {
+				    console.log("Received response successfully: " + data);
+				    console.log(that.output);
+				    that.output = data;
+				}).
+				error(function(data, status, headers, config) {
+				    console.log("Err in response: " + data);
+				});
 		};
 	}
 

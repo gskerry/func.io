@@ -47,7 +47,7 @@ router.get('/', function (req, res) {
 			 fs.writeFile(outfile, result, function (err) { \
 			 	if (err) return console.log(err); \
 			 	console.log('output written: ' + outfile); \
-			 	fs.writeFile('6-docker-done/done.json', 'done', function (err) {if (err) return console.log(err);}); \
+			 	fs.writeFile('6-docker-done/done.json', 'done', function (err) {if (err) return console.log(err); console.log('done writing done.json')}); \
 			 }); \
 		}); \
 	}; \
@@ -90,15 +90,6 @@ router.get('/', function (req, res) {
 			});
 		},
 		function(callback){
-			console.log('Sending stdin to terminal');
-			console.log('Running: ' + 'docker run -i --rm -v "$PWD":/src/app -w /src/app ' + image + ' ' + language + ' ' + '3-scripts/'+scriptName + ' ' + '4-data/'+infile + ' ' + '4-data/'+outfile + '\n')
-			terminal.stdin.write('docker run -i --rm -v "$PWD":/src/app -w /src/app ' + image + ' ' + language + ' ' + '3-scripts/'+scriptName + ' ' + '4-data/'+infile + ' ' + '4-data/'+outfile + '\n');
-			// terminal.stdin.on('end', function() {
-			// 	//Add callback when docker is done writing
-			// 	console.log("Done running docker");
-			// 	callback(null, 'three');
-			// });
-
 			// Wait for docker to send word that it has finished running the script via the "done.json" file.
 			var watcher = chokidar.watch('./6-docker-done/', {
 			  ignored: /[\/\\]\./,
@@ -109,14 +100,24 @@ router.get('/', function (req, res) {
 
 			watcher
 			  .on('add', function(path) {
-			  	log('File', path, 'has been added');
-			  	// Here is the critical callback that only happens AFTER docker has finished EXECUTING the script
-			  	callback(null, 'three');
-			  	// Remove the done.json file
-			  	fs.unlink('6-docker-done/done.json');
-			  	// Close the watcher
-			  	watcher.close();
+			  	setTimeout(function() {		  		
+				  	log('File', path, 'has been added');
+				  	// Remove the done.json file
+				  	fs.unlink('6-docker-done/done.json', function(err) {
+				  		if (err) throw err;
+				  		console.log('successfully deleted done.json');
+				  	});
+				  	// Here is the critical callback that only happens AFTER docker has finished EXECUTING the script
+				  	callback(null, 'three');
+				  	// Close the watcher
+				  	watcher.close();
+			  	}, 500);
 			  });
+
+			console.log('Sending stdin to terminal');
+			console.log('Running: ' + 'docker run -d -v "$PWD":/src/app -w /src/app ' + image + ' ' + language + ' ' + '3-scripts/'+scriptName + ' ' + '4-data/'+infile + ' ' + '4-data/'+outfile + '\n')
+			terminal.stdin.write('docker run -d -v "$PWD":/src/app -w /src/app ' + image + ' ' + language + ' ' + '3-scripts/'+scriptName + ' ' + '4-data/'+infile + ' ' + '4-data/'+outfile + '\n');
+
 		},
 		function(callback){
 			fs.readFile('4-data/' + outfile, function(err, data) {
