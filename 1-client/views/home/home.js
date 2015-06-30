@@ -85,4 +85,8 @@ app.controller('SequenceController', function ($scope, $http) {
     	$scope.sequencer.run();
     }
 
+    $scope.runSequence = function() {
+    	$scope.sequencer.run();
+    }
+
 });
