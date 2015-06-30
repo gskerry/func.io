@@ -7,10 +7,8 @@ module.exports = router;
 
 router.use('/scriptwriter', require('./scriptwriter'));
 router.use('/saver', require('./saver'));
-// router.use('/seatgeek', require('./seatgeek'));
+router.use('/blockgetter', require('./blockgetter'));
 
-// Make sure this is after all of
-// the registered routes!
 router.use(function (req, res) {
     res.status(404).end();
 });

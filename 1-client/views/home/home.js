@@ -1,5 +1,7 @@
 app.controller('SequenceController', function ($scope, $http) {
 
+	$scope.savedblocks = [];
+
 	function Sequencer () {
 		this.sequence = [];
 		this.push = function(block) {
@@ -110,18 +112,48 @@ app.controller('SequenceController', function ($scope, $http) {
 		$scope.startBlock.funct = editor.getSession().getValue();
 	});
 
-    $scope.createBlock = function() {
-    	var block = new Block($scope.sequencer.length);
-    	$scope.sequencer.push(block);
-    	console.log("New Block created!");
-    }
+	$scope.createBlock = function() {
+		var block = new Block($scope.sequencer.length);
+		$scope.sequencer.push(block);
+		console.log("New Block created!");
+	}
+
+	$scope.addBlock = function(savedblock) {
+		var block = new Block($scope.sequencer.length);
+		
+		block.type = savedblock.input_type;
+		block.funct = savedblock.script;
+		block.language = savedblock.lingo;
+		block.name = savedblock.name;
+
+		$scope.sequencer.push(block);
+		console.log("New Block Added!");
+	}	
 
     $scope.runSequence = function() {
     	$scope.sequencer.run();
     }
 
-    // $scope.runSequence = function() {
-    // 	$scope.sequencer.run();
-    // }
+    $scope.pullBlocks = function(){
+
+    	console.log('pullBlocks FIRED')
+
+    	$http.get('/api/blockgetter', {
+			    // params: blockContents
+		    }).
+				success(function(data, status, headers, config) {
+				    console.log("success: " + data);
+				    $scope.savedblocks = data;
+				    console.log('savedBlocks: ',$scope.savedBlocks)
+				}).
+				error(function(data, status, headers, config) {
+				    console.log("Err: " + data);
+				});
+
+	    
+
+    }
+
+	$scope.pullBlocks();
 
 });

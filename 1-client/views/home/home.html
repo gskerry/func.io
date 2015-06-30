@@ -2,6 +2,14 @@
 
 <p>Start Block</p>
 
+<h3>saved blocks</h3>
+<div ng-repeat="savedblock in savedblocks">
+    <p>{{savedblock}}</p>
+    <button type="button" ng-click="addBlock(savedblock)">Add</button>
+</div>
+
+<button type="button" class="btn btn-success" ng-click="pullBlocks()">Refresh</button>
+
     <div>
         <form style="background-color:pink;margin:40px">
             <div class="form-group">
@@ -52,6 +60,8 @@
                 <textarea ng-model="block.funct" type="text" class="form-control" id="Function"></textarea>
             </div>
             <p>Output: {{block.output}}</p>
+            <input ng-model="block.name" type="text" id="name" placeholder="{{block.name}}">
+            <button type="button" class="btn btn-success" ng-click="startBlock.save()">Save</button>
         </form>
     </div>
 
