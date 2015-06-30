@@ -6,9 +6,11 @@ var app = express()
 var root = path.join(__dirname, '../');
 var bowerPath = path.join(root, './bower_components');
 var browserPath = path.join(root, './1-client');
+var publicPath = path.join(root, './public');
 
 app.use(express.static(bowerPath));
 app.use(express.static(browserPath));
+app.use(express.static(publicPath));
 
 var indexHtmlPath = path.join(__dirname, '/index.html');
 

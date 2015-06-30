@@ -75,6 +75,14 @@ app.controller('SequenceController', function ($scope, $http) {
 	$scope.sequencer = new Sequencer();
 	$scope.startBlock = new StartBlock();
 
+	// Update the function in the startblock and keep it synchronized wit hte model
+	// Kinda dirty, but it works
+
+	editor.getSession().on('change', function(){
+		textarea.val(editor.getSession().getValue());
+		$scope.startBlock.funct = editor.getSession().getValue();
+	});
+
     $scope.createBlock = function() {
     	var block = new Block($scope.sequencer.length);
     	$scope.sequencer.push(block);
