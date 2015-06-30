@@ -30,7 +30,34 @@ app.controller('SequenceController', function ($scope, $http) {
 		this.type;
 		this.funct;
 		this.language;
+		this.name;
 		this.blockPosition = "start";
+		
+		this.save = function(){
+			
+			console.log("save fired.")
+
+			var blockContents = {
+				'name': this.name,
+				'input_type': this.type,
+				'lingo': this.language,
+				'script': this.funct
+			}
+
+			console.log("blockContents:", blockContents)
+
+			$http.get('/api/saver', {
+			    params: blockContents
+		    }).
+				success(function(data, status, headers, config) {
+				    console.log("success: " + data);
+				}).
+				error(function(data, status, headers, config) {
+				    console.log("Err: " + data);
+				});
+
+		};
+
 		this.execute = function() {
 //			this.output = eval("(" + this.funct + ")" + "(" + this.input + ")");
 
@@ -92,5 +119,9 @@ app.controller('SequenceController', function ($scope, $http) {
     $scope.runSequence = function() {
     	$scope.sequencer.run();
     }
+
+    // $scope.runSequence = function() {
+    // 	$scope.sequencer.run();
+    // }
 
 });

@@ -17,7 +17,8 @@ router.get('/', function (req, res) {
 
 	// NOTE: THIS IS UNIQUE FOR EACH DOCKER RUNNING ENVIRONMENT
 	var dockerImageId = {
-		'node' : 'b8844354c16f'
+		// 'node' : 'b8844354c16f'
+		'node' : '4797dc6f7a9c'
 	}
 
 	console.log(req.query);
