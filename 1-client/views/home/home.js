@@ -1,5 +1,7 @@
 app.controller('SequenceController', function ($scope, $http) {
 
+	$scope.lingos = ['node', 'ruby'];
+
 	$scope.savedblocks = [];
 
 	function Sequencer () {

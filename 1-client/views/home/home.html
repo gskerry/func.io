@@ -24,11 +24,8 @@
                 <input ng-model="startBlock.input" type="text" class="form-control" id="input" placeholder="Input">
 
                 <label for="language">Language</label>
-                <select ng-model="startBlock.language">
-                  <option value="node">Node</option>
-                  <option value="ruby">Ruby</option>
-                </select>                
-                <br>
+                <select ng-model="startBlock.language" ng-options="lingo for lingo in lingos">
+                </select>
 
                 <label for="function">function (input) {</label>
                 <textarea ng-model="startBlock.funct" type="text" class="form-control" id="Function" name="editor"></textarea>
@@ -49,10 +46,14 @@
         <form style="background-color:pink;margin:40px">
             <div class="form-group">
 
-                <label for="language">Language</label>
+<!--                 <label for="language">Language</label>
                 <select ng-model="block.language">
                   <option value="javascript">Javascript</option>
                   <option value="ruby">Ruby</option>
+                </select>
+                <br> -->
+                <label for="language">Language</label>
+                <select ng-model="block.language" ng-options="lingo for lingo in lingos">
                 </select>
                 <br>
 
