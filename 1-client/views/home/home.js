@@ -33,10 +33,12 @@ app.controller('SequenceController', function ($scope, $http) {
 					}
 				}
 				console.log("Ran a block!");
-			}
-			// console.log(this.sequence[this.sequence.length-1].output);
-		}
-	}
+			
+			} // close for loop
+
+		} // close run function 
+	
+	} // close Sequencer constructor
 
 	function StartBlock () {
 		var that = this;
@@ -63,43 +65,37 @@ app.controller('SequenceController', function ($scope, $http) {
 			console.log("blockContents:", blockContents)
 
 			$http.get('/api/saver', {
-			    params: blockContents
-		    }).
-				success(function(data, status, headers, config) {
-				    console.log("success: " + data);
-				}).
+				params: blockContents
+			}).
+			success(function(data, status, headers, config) {
+				console.log("success: " + data);
+			}).
 				error(function(data, status, headers, config) {
-				    console.log("Err: " + data);
-				});
-
+				console.log("Err: " + data);
+			});
 		};
 
 		this.execute = function() {
-//			this.output = eval("(" + this.funct + ")" + "(" + this.input + ")");
-
-//			Make a request to the server with the block params
 
 			var blockContents = {
-		    	input: this.input,
-		    	input_type: this.input_type,
-		    	language: this.language,
-		    	blockPosition: this.blockPosition,
-		    	funct: this.funct
-			}
-
+				input: this.input,
+				input_type: this.input_type,
+				language: this.language,
+				blockPosition: this.blockPosition,
+				funct: this.funct
+			};
 
 			$http.get('/api/scriptwriter', {
-			    params: blockContents
-		    }).
-				success(function(data, status, headers, config) {
-				    console.log("Received response successfully: " + data);
-				    console.log(that.output);
-				    that.output = data;
-				}).
-				error(function(data, status, headers, config) {
-				    console.log("Err in response: " + data);
-				});
-			
+				params: blockContents
+			}).
+			success(function(data, status, headers, config) {
+				console.log("Received response successfully: " + data);
+				console.log(that.output);
+				that.output = data;
+			}).
+			error(function(data, status, headers, config) {
+				console.log("Err in response: " + data);
+			});
 		};
 	}
 
@@ -130,7 +126,7 @@ app.controller('SequenceController', function ($scope, $http) {
 		var block = new Block($scope.sequencer.length);
 		$scope.sequencer.push(block);
 		console.log("New Block created!");
-	}
+	};
 
 	$scope.addBlock = function(savedblock) {
 		var block = new Block($scope.sequencer.length);
@@ -142,31 +138,29 @@ app.controller('SequenceController', function ($scope, $http) {
 
 		$scope.sequencer.push(block);
 		console.log("New Block Added!");
-	}	
+	};
 
     $scope.runSequence = function() {
-    	$scope.sequencer.run();
-    }
+		$scope.sequencer.run();
+    };
 
     $scope.pullBlocks = function(){
 
-    	console.log('pullBlocks FIRED')
+		console.log('pullBlocks FIRED')
 
-    	$http.get('/api/blockgetter', {
-			    // params: blockContents
-		    }).
-				success(function(data, status, headers, config) {
-				    console.log("success: " + data);
-				    $scope.savedblocks = data;
-				    console.log('savedBlocks: ',$scope.savedBlocks)
-				}).
-				error(function(data, status, headers, config) {
-				    console.log("Err: " + data);
-				});
+		$http.get('/api/blockgetter', {
+			// params: blockContents
+		}).
+		success(function(data, status, headers, config) {
+			console.log("success: " + data);
+			$scope.savedblocks = data;
+			console.log('savedBlocks: ',$scope.savedBlocks)
+		}).
+		error(function(data, status, headers, config) {
+			console.log("Err: " + data);
+		});
 
-	    
-
-    }
+    };
 
 	$scope.pullBlocks();
 
