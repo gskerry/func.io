@@ -32,7 +32,7 @@ app.controller('SequenceController', function ($scope, $http) {
 		var that = this;
 		// if you've set this to 'that', should the properties be defined on 'that'?
 		this.input;
-		this.type;
+		this.input_type;
 		this.funct;
 		this.language;
 		this.name;
@@ -44,7 +44,7 @@ app.controller('SequenceController', function ($scope, $http) {
 
 			var blockContents = {
 				'name': this.name,
-				'input_type': this.type,
+				'input_type': this.input_type,
 				'lingo': this.language,
 				'script': this.funct
 			}
@@ -70,7 +70,7 @@ app.controller('SequenceController', function ($scope, $http) {
 
 			var blockContents = {
 		    	input: this.input,
-		    	type: this.type,
+		    	input_type: this.input_type,
 		    	language: this.language,
 		    	blockPosition: this.blockPosition,
 		    	funct: this.funct
@@ -124,7 +124,7 @@ app.controller('SequenceController', function ($scope, $http) {
 	$scope.addBlock = function(savedblock) {
 		var block = new Block($scope.sequencer.length);
 		
-		block.type = savedblock.input_type;
+		block.input_type = savedblock.input_type;
 		block.funct = savedblock.script;
 		block.language = savedblock.lingo;
 		block.name = savedblock.name;
