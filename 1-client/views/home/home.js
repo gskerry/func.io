@@ -16,23 +16,34 @@ app.controller('SequenceController', function ($scope, $http) {
 			$scope.startBlock.execute();
 			for (var i = 0; i < this.sequence.length; i++) {
 				if (i === 0) {
-					this.sequence[i].setInput($scope.startBlock.output);
-					this.sequence[i].execute();
+					if(this.sequence[i].input_type === $scope.startBlock.output_type){
+						this.sequence[i].setInput($scope.startBlock.output);
+						this.sequence[i].execute();	
+					} else {
+						alert("IO mismatch");
+						return;
+					}
 				} else {
-					this.sequence[i].setInput(this.sequence[i-1].output);
-					this.sequence[i].execute();
+					if(this.sequence[i].input_type === this.sequence[i-1].output_type){
+						this.sequence[i].setInput(this.sequence[i-1].output);
+						this.sequence[i].execute();						
+					} else {
+						alert("IO mismatch");
+						return;
+					}
 				}
-				console.log("Ran a block!");
-			}
-			// console.log(this.sequence[this.sequence.length-1].output);
-		}
-	}
+			} // close for loop
+
+		} // close run function 
+	
+	} // close Sequencer constructor
 
 	function StartBlock () {
 		var that = this;
 		// if you've set this to 'that', should the properties be defined on 'that'?
 		this.input;
-		this.type;
+		this.input_type;
+		this.output_type;
 		this.funct;
 		this.language;
 		this.name;
@@ -44,7 +55,8 @@ app.controller('SequenceController', function ($scope, $http) {
 
 			var blockContents = {
 				'name': this.name,
-				'input_type': this.type,
+				'input_type': this.input_type,
+				'output_type': this.output_type,
 				'lingo': this.language,
 				'script': this.funct
 			}
@@ -52,48 +64,45 @@ app.controller('SequenceController', function ($scope, $http) {
 			console.log("blockContents:", blockContents)
 
 			$http.get('/api/saver', {
-			    params: blockContents
-		    }).
-				success(function(data, status, headers, config) {
-				    console.log("success: " + data);
-				}).
+				params: blockContents
+			}).
+			success(function(data, status, headers, config) {
+				console.log("success: " + data);
+			}).
 				error(function(data, status, headers, config) {
-				    console.log("Err: " + data);
-				});
-
+				console.log("Err: " + data);
+			});
 		};
 
 		this.execute = function() {
-//			this.output = eval("(" + this.funct + ")" + "(" + this.input + ")");
-
-//			Make a request to the server with the block params
 
 			var blockContents = {
-		    	input: this.input,
-		    	type: this.type,
-		    	language: this.language,
-		    	blockPosition: this.blockPosition,
-		    	funct: this.funct
-			}
-
+				input: this.input,
+				input_type: this.input_type,
+				output_type: this.output_type,
+				language: this.language,
+				blockPosition: this.blockPosition,
+				funct: this.funct
+			};
 
 			$http.get('/api/scriptwriter', {
-			    params: blockContents
-		    }).
-				success(function(data, status, headers, config) {
-				    console.log("Received response successfully: " + data);
-				    console.log(that.output);
-				    that.output = data;
-				}).
-				error(function(data, status, headers, config) {
-				    console.log("Err in response: " + data);
-				});
-			
+				params: blockContents
+			}).
+			success(function(data, status, headers, config) {
+				console.log("Received response successfully: " + data);
+				console.log(that.output);
+				that.output = data;
+			}).
+			error(function(data, status, headers, config) {
+				console.log("Err in response: " + data);
+			});
 		};
 	}
 
 	function Block (position) {
 		this.input;
+		this.input_type;
+		this.output_type;
 		this.funct;
 		this.blockPosition = position;
 		this.setInput = function(input) {
@@ -119,43 +128,42 @@ app.controller('SequenceController', function ($scope, $http) {
 		var block = new Block($scope.sequencer.length);
 		$scope.sequencer.push(block);
 		console.log("New Block created!");
-	}
+	};
 
 	$scope.addBlock = function(savedblock) {
 		var block = new Block($scope.sequencer.length);
 		
-		block.type = savedblock.input_type;
+		block.input_type = savedblock.input_type;
+		block.output_type = savedblock.output_type;
 		block.funct = savedblock.script;
 		block.language = savedblock.lingo;
 		block.name = savedblock.name;
 
 		$scope.sequencer.push(block);
 		console.log("New Block Added!");
-	}	
+	};
 
     $scope.runSequence = function() {
-    	$scope.sequencer.run();
-    }
+		$scope.sequencer.run();
+    };
 
     $scope.pullBlocks = function(){
 
-    	console.log('pullBlocks FIRED')
+		console.log('pullBlocks FIRED')
 
-    	$http.get('/api/blockgetter', {
-			    // params: blockContents
-		    }).
-				success(function(data, status, headers, config) {
-				    console.log("success: " + data);
-				    $scope.savedblocks = data;
-				    console.log('savedBlocks: ',$scope.savedBlocks)
-				}).
-				error(function(data, status, headers, config) {
-				    console.log("Err: " + data);
-				});
+		$http.get('/api/blockgetter', {
+			// params: blockContents
+		}).
+		success(function(data, status, headers, config) {
+			console.log("success: " + data);
+			$scope.savedblocks = data;
+			console.log('savedBlocks: ',$scope.savedBlocks)
+		}).
+		error(function(data, status, headers, config) {
+			console.log("Err: " + data);
+		});
 
-	    
-
-    }
+    };
 
 	$scope.pullBlocks();
 

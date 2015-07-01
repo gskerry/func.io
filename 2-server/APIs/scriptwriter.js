@@ -24,8 +24,8 @@ router.get('/', function (req, res) {
 	console.log(req.query);
 
 	var language = req.query.language;
-	var type = req.query.type;
-	console.log("the type is:", type)
+	var input_type = req.query.input_type;
+	console.log("the input_type is:", input_type)
 	var fileExtension = languageToFileExtensionMapping[language]
 	var blockPosition = req.query.blockPosition;
 	var scriptName = blockPosition + fileExtension
@@ -35,7 +35,7 @@ router.get('/', function (req, res) {
 	(function(inp){
 		if(inp === 'string'){parser = ""}
 		else if(inp === 'integer'){parser = "input = Number(input)"}
-	})(type);
+	})(input_type);
 
 	console.log("parser: ",parser)
 
