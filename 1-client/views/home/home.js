@@ -12,9 +12,18 @@ app.controller('SequenceController', function ($scope, $http) {
 		};
 		this.sequenceId = Date.now();
 
-		this.run = function() {
-			$scope.startBlock.execute();
-			for (var i = 0; i < this.sequence.length; i++) {
+		this.run = function(this) {
+			$scope.startBlock.execute()
+				.then(function(prevBlockOut){
+					if(this.sequence[1].input_type === $scope.startBlock.output_type){
+						this.sequence[1].setInput(prevBlockOut);
+						this.sequence[1].execute();	
+					} else {
+						alert("IO mismatch");
+						return;
+					}					
+				});
+			/*for (var i = 0; i < this.sequence.length; i++) {
 				if (i === 0) {
 					if(this.sequence[i].input_type === $scope.startBlock.output_type){
 						this.sequence[i].setInput($scope.startBlock.output);
@@ -32,9 +41,9 @@ app.controller('SequenceController', function ($scope, $http) {
 						return;
 					}
 				}
-			} // close for loop
+			} // close for loop*/
 
-		} // close run function 
+		}; // close run function 
 	
 	} // close Sequencer constructor
 
@@ -85,19 +94,25 @@ app.controller('SequenceController', function ($scope, $http) {
 				funct: this.funct
 			};
 
-			$http.get('/api/scriptwriter', {
-				params: blockContents
-			}).
-			success(function(data, status, headers, config) {
-				console.log("Received response successfully: " + data);
-				console.log(that.output);
-				that.output = data;
-			}).
-			error(function(data, status, headers, config) {
-				console.log("Err in response: " + data);
-			});
-		};
-	}
+						return $http.get('/api/scriptwriter', {
+							params: blockContents
+						}).
+						success(function(data, status, headers, config) {
+							console.log("Received response successfully: " + data);
+							console.log(that.output);
+							that.output = data;
+							return that.output;
+						}).
+						error(function(data, status, headers, config) {
+							console.log("Err in response: " + data);
+							return data;
+						});
+
+		} // close execute 
+
+	} // close Startblock
+
+			
 
 	function Block (position) {
 		
@@ -137,7 +152,27 @@ app.controller('SequenceController', function ($scope, $http) {
 		};
 
 		this.execute = function() {
-			this.output = eval("(" + this.funct + ")" + "(" + this.input + ")");
+
+			var blockContents = {
+				input: this.input,
+				input_type: this.input_type,
+				output_type: this.output_type,
+				language: this.language,
+				blockPosition: this.blockPosition,
+				funct: this.funct
+			};
+
+			$http.get('/api/scriptwriter', {
+				params: blockContents
+			}).
+			success(function(data, status, headers, config) {
+				console.log("Received response successfully: " + data);
+				console.log(that.output);
+				that.output = data;
+			}).
+			error(function(data, status, headers, config) {
+				console.log("Err in response: " + data);
+			});
 		};
 
 	}; // close Block Constructor
