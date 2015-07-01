@@ -11,6 +11,10 @@ var schema = new mongoose.Schema({
         type: String,
         required: true
     },
+    output_type: {
+        type: String,
+        required: true
+    },
     lingo: {
         type: String,
         required: true

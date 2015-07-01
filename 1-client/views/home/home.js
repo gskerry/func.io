@@ -32,8 +32,6 @@ app.controller('SequenceController', function ($scope, $http) {
 						return;
 					}
 				}
-				console.log("Ran a block!");
-			
 			} // close for loop
 
 		} // close run function 
@@ -58,6 +56,7 @@ app.controller('SequenceController', function ($scope, $http) {
 			var blockContents = {
 				'name': this.name,
 				'input_type': this.input_type,
+				'output_type': this.output_type,
 				'lingo': this.language,
 				'script': this.funct
 			}
@@ -80,6 +79,7 @@ app.controller('SequenceController', function ($scope, $http) {
 			var blockContents = {
 				input: this.input,
 				input_type: this.input_type,
+				output_type: this.output_type,
 				language: this.language,
 				blockPosition: this.blockPosition,
 				funct: this.funct
@@ -101,6 +101,8 @@ app.controller('SequenceController', function ($scope, $http) {
 
 	function Block (position) {
 		this.input;
+		this.input_type;
+		this.output_type;
 		this.funct;
 		this.blockPosition = position;
 		this.setInput = function(input) {
@@ -132,6 +134,7 @@ app.controller('SequenceController', function ($scope, $http) {
 		var block = new Block($scope.sequencer.length);
 		
 		block.input_type = savedblock.input_type;
+		block.output_type = savedblock.output_type;
 		block.funct = savedblock.script;
 		block.language = savedblock.lingo;
 		block.name = savedblock.name;
