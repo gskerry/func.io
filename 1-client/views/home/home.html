@@ -14,18 +14,21 @@
         <form style="background-color:pink;margin:40px">
             <div class="form-group">
                 <label for="input">Input</label>
-                <label for="type">Type</label>
+                
+                <!-- <label for="type">Type</label>
                 <select ng-model="startBlock.type">
                   <option value="string">string</option>
                   <option value="integer">integer</option>
                   <option value="array">array</option>
                   <option value="object">object</option>
-                </select>
+                </select> -->
+                <label for="type">Type</label>
+                <select ng-model="startBlock.type" ng-options="type for type in types"></select>
+
                 <input ng-model="startBlock.input" type="text" class="form-control" id="input" placeholder="Input">
 
                 <label for="language">Language</label>
-                <select ng-model="startBlock.language" ng-options="lingo for lingo in lingos">
-                </select>
+                <select ng-model="startBlock.language" ng-options="lingo for lingo in lingos"></select>
 
                 <label for="function">function (input) {</label>
                 <textarea ng-model="startBlock.funct" type="text" class="form-control" id="Function" name="editor"></textarea>
