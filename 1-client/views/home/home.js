@@ -100,18 +100,47 @@ app.controller('SequenceController', function ($scope, $http) {
 	}
 
 	function Block (position) {
+		
 		this.input;
 		this.input_type;
 		this.output_type;
 		this.funct;
 		this.blockPosition = position;
+		
 		this.setInput = function(input) {
 			this.input = input;
-		}
+		};
+		
+		this.save = function(){
+			
+			console.log("save fired.")
+
+			var blockContents = {
+				'name': this.name,
+				'input_type': this.input_type,
+				'output_type': this.output_type,
+				'lingo': this.language,
+				'script': this.funct
+			}
+
+			console.log("blockContents:", blockContents)
+
+			$http.get('/api/saver', {
+				params: blockContents
+			}).
+			success(function(data, status, headers, config) {
+				console.log("success: " + data);
+			}).
+				error(function(data, status, headers, config) {
+				console.log("Err: " + data);
+			});
+		};
+
 		this.execute = function() {
 			this.output = eval("(" + this.funct + ")" + "(" + this.input + ")");
 		};
-	}
+
+	}; // close Block Constructor
 
 	$scope.sequencer = new Sequencer();
 	$scope.startBlock = new StartBlock();
