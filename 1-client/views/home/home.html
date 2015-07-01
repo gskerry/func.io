@@ -13,18 +13,11 @@
     <div>
         <form style="background-color:pink;margin:40px">
             <div class="form-group">
-                <label for="input">Input</label>
                 
-                <!-- <label for="type">Type</label>
-                <select ng-model="startBlock.type">
-                  <option value="string">string</option>
-                  <option value="integer">integer</option>
-                  <option value="array">array</option>
-                  <option value="object">object</option>
-                </select> -->
                 <label for="input_type">input_type</label>
-                <select ng-model="startBlock.input_type" ng-options="type for type in types"></select>
+                <select ng-model="startBlock.input_type" ng-options="type for type in types"></select><br>
 
+                <label for="input">Input</label>
                 <input ng-model="startBlock.input" type="text" class="form-control" id="input" placeholder="Input">
 
                 <label for="language">Language</label>
@@ -35,7 +28,11 @@
                 <div id="editor"></div>
                 <p>}</p>
             </div>
-            <p>Output: {{startBlock.output}}</p>
+            <p>Output: {{startBlock.output}}</p><br>
+            
+            <label for="output_type">output_type</label>
+            <select ng-model="startBlock.output_type" ng-options="type for type in types"></select><br>
+
             <input ng-model="startBlock.name" type="text" id="name" placeholder="function name">
             <button type="button" class="btn btn-success" ng-click="startBlock.save()">Save</button>
         </form>
@@ -49,23 +46,25 @@
         <form style="background-color:pink;margin:40px">
             <div class="form-group">
 
-<!--                 <label for="language">Language</label>
-                <select ng-model="block.language">
-                  <option value="javascript">Javascript</option>
-                  <option value="ruby">Ruby</option>
-                </select>
-                <br> -->
+                <label for="input_type">input_type</label>
+                <select ng-model="block.input_type" ng-options="type for type in types"></select><br>
+
                 <label for="language">Language</label>
-                <select ng-model="block.language" ng-options="lingo for lingo in lingos">
-                </select>
-                <br>
+                <select ng-model="block.language" ng-options="lingo for lingo in lingos"></select><br>
 
                 <label for="function">Function</label>
                 <textarea ng-model="block.funct" type="text" class="form-control" id="Function"></textarea>
+
             </div>
+
             <p>Output: {{block.output}}</p>
+
+            <label for="output_type">output_type</label>
+            <select ng-model="block.output_type" ng-options="type for type in types"></select><br>
+
             <input ng-model="block.name" type="text" id="name" placeholder="{{block.name}}">
             <button type="button" class="btn btn-success" ng-click="startBlock.save()">Save</button>
+
         </form>
     </div>
 

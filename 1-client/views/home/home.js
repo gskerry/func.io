@@ -16,11 +16,21 @@ app.controller('SequenceController', function ($scope, $http) {
 			$scope.startBlock.execute();
 			for (var i = 0; i < this.sequence.length; i++) {
 				if (i === 0) {
-					this.sequence[i].setInput($scope.startBlock.output);
-					this.sequence[i].execute();
+					if(this.sequence[i].input_type === $scope.startBlock.output_type){
+						this.sequence[i].setInput($scope.startBlock.output);
+						this.sequence[i].execute();	
+					} else {
+						alert("IO mismatch");
+						return;
+					}
 				} else {
-					this.sequence[i].setInput(this.sequence[i-1].output);
-					this.sequence[i].execute();
+					if(this.sequence[i].input_type === this.sequence[i-1].output_type){
+						this.sequence[i].setInput(this.sequence[i-1].output);
+						this.sequence[i].execute();						
+					} else {
+						alert("IO mismatch");
+						return;
+					}
 				}
 				console.log("Ran a block!");
 			}
@@ -33,6 +43,7 @@ app.controller('SequenceController', function ($scope, $http) {
 		// if you've set this to 'that', should the properties be defined on 'that'?
 		this.input;
 		this.input_type;
+		this.output_type;
 		this.funct;
 		this.language;
 		this.name;
