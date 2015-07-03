@@ -7,34 +7,59 @@ app.controller('SequenceController', function ($scope, $http) {
 
 	function Sequencer () {
 		this.sequence = [];
+		var that = this;
 		this.push = function(block) {
 			this.sequence.push(block);
 		};
 		this.sequenceId = Date.now();
 
-		this.run = function() {
-			$scope.startBlock.execute();
-			for (var i = 0; i < this.sequence.length; i++) {
-				if (i === 0) {
-					if(this.sequence[i].input_type === $scope.startBlock.output_type){
-						this.sequence[i].setInput($scope.startBlock.output);
-						this.sequence[i].execute();	
-					} else {
-						alert("IO mismatch");
-						return;
-					}
+		this.runBlock = function(block, callback) {
+			console.log("Block to be run is ", block);
+			if (block.blockPosition === 0) {
+				console.log("BLOCK 1")
+				if(block.input_type === $scope.startBlock.output_type){
+					block.setInput($scope.startBlock.output);
+					block.execute(callback);	
 				} else {
-					if(this.sequence[i].input_type === this.sequence[i-1].output_type){
-						this.sequence[i].setInput(this.sequence[i-1].output);
-						this.sequence[i].execute();						
-					} else {
-						alert("IO mismatch");
+					alert("IO mismatch");
+				}
+			} else {
+				console.log("BLOCK 2+")
+				if(block.input_type === that.sequence[block.blockPosition-1].output_type){
+					block.setInput(that.sequence[block.blockPosition-1].output);
+					block.execute(callback);						
+				} else {
+					alert("IO mismatch");
+				}
+			}
+		}
+
+		this.run = function() {
+			$scope.startBlock.execute()
+				.then(function(){
+					console.log("Executing normal blocks");
+					if(!that.sequence[0]) {
+						alert("No blocks!");
 						return;
 					}
-				}
-			} // close for loop
 
-		} // close run function 
+					async.eachSeries(that.sequence, that.runBlock, function(err) {
+						alert("DONE!")
+					});
+
+					// if(this.sequence[0].input_type === $scope.startBlock.output_type){
+					// 	this.sequence[0].setInput(previousBlockOut);
+					// 	this.sequence[1].execute();	
+					// } else {
+					// 	alert("IO mismatch");
+					// 	return;
+					// }
+
+					// for (var i = 0; i < this.sequence.length; i++) {
+
+					// } // close for loop	
+				});
+		}; // close run function 
 	
 	} // close Sequencer constructor
 
@@ -85,22 +110,29 @@ app.controller('SequenceController', function ($scope, $http) {
 				funct: this.funct
 			};
 
-			$http.get('/api/scriptwriter', {
-				params: blockContents
-			}).
-			success(function(data, status, headers, config) {
-				console.log("Received response successfully: " + data);
-				console.log(that.output);
-				that.output = data;
-			}).
-			error(function(data, status, headers, config) {
-				console.log("Err in response: " + data);
-			});
-		};
-	}
+						return $http.get('/api/scriptwriter', {
+							params: blockContents
+						}).
+						success(function(data, status, headers, config) {
+							console.log("Received response successfully: " + data);
+							console.log(that.output);
+							that.output = data;
+							return data;
+						}).
+						error(function(data, status, headers, config) {
+							console.log("Err in response: " + data);
+							return data;
+						});
+
+		} // close execute 
+
+	} // close Startblock
+
+			
 
 	function Block (position) {
-		
+		var that = this;
+
 		this.input;
 		this.input_type;
 		this.output_type;
@@ -136,30 +168,32 @@ app.controller('SequenceController', function ($scope, $http) {
 			});
 		};
 
-		this.execute = function() {
-			//this.output = eval("(" + this.funct + ")" + "(" + this.input + ")");
-
-			//Make a request to the server with the block params
+		this.execute = function(callback) {
 
 			var blockContents = {
-		    	type: this.type,
-		    	language: this.language,
-		    	blockPosition: this.blockPosition,
-		    	funct: this.funct
-			}
-
+				input: this.input,
+				input_type: this.input_type,
+				output_type: this.output_type,
+				language: this.language,
+				blockPosition: this.blockPosition,
+				funct: this.funct
+			};
 
 			$http.get('/api/scriptwriter', {
-			    params: blockContents
-		    }).
-				success(function(data, status, headers, config) {
-				    console.log("Received response successfully: " + data);
-				    console.log(that.output);
-				    that.output = data;
-				}).
-				error(function(data, status, headers, config) {
-				    console.log("Err in response: " + data);
-				});
+				params: blockContents
+			}).
+			success(function(data, status, headers, config) {
+				console.log("Received response successfully: " + data);
+				console.log(that.output);
+				that.output = data;
+				callback();
+			}).
+			error(function(data, status, headers, config) {
+				console.log("Err in response: " + data);
+				console.log(that.output);
+				that.output = data;
+				callback("Error");
+			});
 		};
 
 	}; // close Block Constructor
@@ -176,13 +210,15 @@ app.controller('SequenceController', function ($scope, $http) {
 	});
 
 	$scope.createBlock = function() {
-		var block = new Block($scope.sequencer.length);
+		console.log("Creating Block with position", $scope.sequencer.sequence.length);
+		var block = new Block($scope.sequencer.sequence.length);
 		$scope.sequencer.push(block);
 		console.log("New Block created!");
 	};
 
-	$scope.addBlock = function(savedblock) {
-		var block = new Block($scope.sequencer.length);
+	//This is for adding to the DB
+	$scope.addSavedBlock = function(savedblock) {
+		var block = new Block($scope.sequencer.sequence.length);
 		
 		block.input_type = savedblock.input_type;
 		block.output_type = savedblock.output_type;
