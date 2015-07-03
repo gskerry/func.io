@@ -47,7 +47,7 @@ router.get('/', function (req, res) {
 			 fs.writeFile(outfile, result, function (err) { \
 			 	if (err) return console.log(err); \
 			 	console.log('output written: ' + outfile); \
-			 	fs.writeFile('6-docker-done/done.json', 'done', function (err) {if (err) return console.log(err); console.log('done writing done.json')}); \
+			 	fs.writeFile('6-docker-done/done.json', 'done', function (err) {if (err) {console.log(err)}; console.log('DONE WRITING done.json');}); \
 			 }); \
 		}); \
 	}; \
@@ -111,7 +111,7 @@ router.get('/', function (req, res) {
 				  	callback(null, 'three');
 				  	// Close the watcher
 				  	watcher.close();
-			  	}, 500);
+			  	}, 2000);
 			  });
 
 			console.log('Sending stdin to terminal');
