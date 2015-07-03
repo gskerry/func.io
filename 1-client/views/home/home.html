@@ -5,7 +5,7 @@
 <h3>saved blocks</h3>
 <div ng-repeat="savedblock in savedblocks">
     <p>{{savedblock}}</p>
-    <button type="button" ng-click="addBlock(savedblock)">Add</button>
+    <button type="button" ng-click="addSavedBlock(savedblock)">Add</button>
 </div>
 
 <button type="button" class="btn btn-success" ng-click="pullBlocks()">Refresh</button>
@@ -22,6 +22,7 @@
 
                 <label for="language">Language</label>
                 <select ng-model="startBlock.language" ng-options="lingo for lingo in lingos"></select>
+                <br>
 
                 <label for="function">function (input) {</label>
                 <textarea ng-model="startBlock.funct" type="text" class="form-control" id="Function" name="editor"></textarea>
@@ -52,9 +53,9 @@
                 <label for="language">Language</label>
                 <select ng-model="block.language" ng-options="lingo for lingo in lingos"></select><br>
 
-                <label for="function">Function</label>
+                <label for="function">function (input) {</label>
                 <textarea ng-model="block.funct" type="text" class="form-control" id="Function"></textarea>
-
+                <p>}</p>
             </div>
 
             <p>Output: {{block.output}}</p>
