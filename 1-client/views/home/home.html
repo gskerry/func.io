@@ -24,10 +24,14 @@
                 <select ng-model="startBlock.language" ng-options="lingo for lingo in lingos"></select>
                 <br>
 
+                <!-- Install Ace Editor -->
+
                 <label for="function">function (input) {</label>
-                <textarea ng-model="startBlock.funct" type="text" class="form-control" id="Function" name="editor"></textarea>
-                <div id="editor"></div>
+                <textarea ng-model="startBlock.funct" type="text" class="form-control" id="Function" name="editorStartBlock"></textarea>
+                <div class="ace-editor" id="editorStartBlock"></div>
                 <p>}</p>
+
+                <!-- Install Ace Editor -->
             </div>
             <p>Output: {{startBlock.output}}</p><br>
             
@@ -53,9 +57,15 @@
                 <label for="language">Language</label>
                 <select ng-model="block.language" ng-options="lingo for lingo in lingos"></select><br>
 
+                <!-- Install Ace Editor -->
+
                 <label for="function">function (input) {</label>
-                <textarea ng-model="block.funct" type="text" class="form-control" id="Function"></textarea>
+                <textarea ng-model="block.funct" type="text" class="form-control" id="Function" name="{{'editorBlock-' + block.blockPosition}}"></textarea>
+                <div id="{{'editorBlock-' + block.blockPosition}}" class='ace-editor'></div>
                 <p>}</p>
+
+                <!-- Install Ace Editor -->
+
             </div>
 
             <p>Output: {{block.output}}</p>
@@ -77,12 +87,3 @@
 </section>
 
 <script src="/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-
-<script>
-    var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/monokai");
-    editor.getSession().setMode("ace/mode/javascript");
-
-    var textarea = $('textarea[name="editor"]').hide();
-    editor.getSession().setValue(textarea.val());
-</script>

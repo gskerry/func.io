@@ -204,16 +204,59 @@ app.controller('SequenceController', function ($scope, $http) {
 	// Update the function in the startblock and keep it synchronized wit hte model
 	// Kinda dirty, but it works
 
-	editor.getSession().on('change', function(){
-		textarea.val(editor.getSession().getValue());
-		$scope.startBlock.funct = editor.getSession().getValue();
+	// Create ACE editor for Start block
+
+	var editorStartBlock = ace.edit("editorStartBlock");
+	editorStartBlock.setTheme("ace/theme/monokai");
+	editorStartBlock.getSession().setMode("ace/mode/javascript");
+
+	var textareaStartBlock = $('textarea[name="editorStartBlock"]').hide();
+	editorStartBlock.getSession().setValue(textareaStartBlock.val());
+
+	editorStartBlock.getSession().on('change', function(){
+		textareaStartBlock.val(editorStartBlock.getSession().getValue());
+		$scope.startBlock.funct = editorStartBlock.getSession().getValue();
 	});
+
+	// Function to create ACE editors dynamically for normal blocks
+
+	var editorBlocks = [];
+	var textareaBlocks = [];
+	function createAceEditor(blockPosition) {
+		console.log("Creating an ACE editor with blockPosition:", "editorBlock-"+blockPosition);
+		editorBlocks[blockPosition] = ace.edit("editorBlock-"+blockPosition);
+		editorBlocks[blockPosition].setTheme("ace/theme/monokai");
+		editorBlocks[blockPosition].getSession().setMode("ace/mode/javascript");
+
+		textareaBlocks[blockPosition] = $('textarea[name=editorBlock-'+blockPosition+']').hide();
+		editorBlocks[blockPosition].getSession().setValue(textareaBlocks[blockPosition].val());
+
+		editorBlocks[blockPosition].getSession().on('change', function(){
+			textareaBlocks[blockPosition].val(editorBlocks[blockPosition].getSession().getValue());
+			$scope.sequencer.sequence[blockPosition].funct = editorBlocks[blockPosition].getSession().getValue();
+		});
+	}
 
 	$scope.createBlock = function() {
 		console.log("Creating Block with position", $scope.sequencer.sequence.length);
 		var block = new Block($scope.sequencer.sequence.length);
 		$scope.sequencer.push(block);
 		console.log("New Block created!");
+
+		//Timer needed because of time it takes to push the new div to the DOM
+		setTimeout(function(){createAceEditor(block.blockPosition);}, 100);
+		// var editorBlock = ace.edit("editorBlock");
+		// editorBlock.setTheme("ace/theme/monokai");
+		// editorBlock.getSession().setMode("ace/mode/javascript");
+
+		// var textareaStartBlock = $('textarea[name="editorBlock"]').hide();
+		// editorBlock.getSession().setValue(textareaStartBlock.val());
+
+		// editorBlock.getSession().on('change', function(){
+		// 	textareaStartBlock.val(editorBlock.getSession().getValue());
+		// 	$scope.startBlock.funct = editorBlock.getSession().getValue();
+		// });
+
 	};
 
 	//This is for adding to the DB
