@@ -6,18 +6,21 @@ app.controller('SequenceController', function ($scope, $http) {
 	$scope.savedblocks = [];
 
 	function Sequencer () {
+		
 		this.sequence = [];
 		this.push = function(block) {
 			this.sequence.push(block);
 		};
 		this.sequenceId = Date.now();
 
-		this.run = function(this) {
+		var that = this;
+
+		this.run = function(that) {
 			$scope.startBlock.execute()
 				.then(function(prevBlockOut){
-					if(this.sequence[1].input_type === $scope.startBlock.output_type){
-						this.sequence[1].setInput(prevBlockOut);
-						this.sequence[1].execute();	
+					if(that.sequence[1].input_type === $scope.startBlock.output_type){
+						that.sequence[1].setInput(prevBlockOut);
+						that.sequence[1].execute();	
 					} else {
 						alert("IO mismatch");
 						return;
