@@ -18,15 +18,16 @@ router.get('/', function (req, res) {
 	// NOTE: THIS IS UNIQUE FOR EACH DOCKER RUNNING ENVIRONMENT
 	var dockerImageId = {
 		// Alex's node image mapping
-		'node' : 'b8844354c16f',
+		// 'node' : 'b8844354c16f',
 
 		// Greg's node image mapping
-		// 'node' : '4797dc6f7a9c'
+		'node' : '4797dc6f7a9c',
 
 		// Alex's ruby image mapping
-		'ruby' : '587d0d048bce'
+		// 'ruby' : '587d0d048bce'
 
 		// Greg's ruby image mapping
+		'ruby' : 'a1ed99fd54db'
 	}
 
 	console.log(req.query);

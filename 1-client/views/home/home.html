@@ -1,14 +1,37 @@
 <section id="home" ng-controller="SequenceController">
 
-<p>Start Block</p>
-
-<h3>saved blocks</h3>
-<div ng-repeat="savedblock in savedblocks">
-    <p>{{savedblock}}</p>
-    <button type="button" ng-click="addSavedBlock(savedblock)">Add</button>
+<div layout="column" layout-fill style="padding-bottom: 10px;">
+  <md-whiteframe class="md-whiteframe-z1" layout layout-align="center center">
+    <h1>Func.io</h1>
+  </md-whiteframe>
 </div>
 
-<button type="button" class="btn btn-success" ng-click="pullBlocks()">Refresh</button>
+
+<div class="btn-group" role="group" aria-label="...">
+  <button type="button" class="btn btn-default">saved blocks</button>
+  <button type="button" class="btn btn-success" ng-click="pullBlocks()">Refresh</button>
+</div>
+
+<!-- <h3 class="md-title">saved blocks</h3> 
+<button type="button" class="btn btn-success" ng-click="pullBlocks()">Refresh</button> -->
+<div style="display: flex">
+    <md-list>
+      <md-list-item class="md-2-line savedblocklist" ng-repeat="savedblock in savedblocks" layout="row"
+          layout-wrap>
+        <div class="md-item-text md-whiteframe-z1" flex>
+          <h3>{{savedblock.name}}</h3>
+          <p>description: ...</p>
+          <p>language: {{savedblock.lingo}}</p>
+          <p>input-type: {{savedblock.input_type}}</p>
+          <p>output-type: {{savedblock.output_type}}</p>
+          <button type="button" class="btn btn-primary" ng-click="addSavedBlock(savedblock)">Add</button>
+        </div>
+      </md-list-item>
+    </md-list>    
+</div>
+
+
+<!-- {"input_type":"integer","lingo":"node","name":"myscript","script":"return input + 2;","_id":"5593180dcb5979c9067ea2b4","__v":0} -->
 
     <div>
         <form style="background-color:pink;margin:40px">
